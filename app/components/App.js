@@ -3,13 +3,15 @@ import { connect } from 'react-redux'
 import * as laneActions from '../dux/lanes'
 import Lanes from './Lanes'
 
-@connect((state) => ({}), {
+@connect((state) => ({
+  lanes: state.lanes
+}), {
   ...laneActions
 })
 export default class App extends React.Component {
 
   render() {
-    const {createLane} = this.props
+    const {lanes, createLane} = this.props
 
     return (
       <div>
@@ -17,7 +19,7 @@ export default class App extends React.Component {
           className={'add-lane'}
           onClick={createLane}
           >+</button>
-        <Lanes />
+        <Lanes lanes={lanes}/>
       </div>
     )
   }

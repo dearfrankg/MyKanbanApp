@@ -4,18 +4,22 @@ import { connect } from 'react-redux'
 import * as noteActions from '../dux/notes'
 
 @connect((state) => ({
-  notes: state.notes
+  allNotes: state.notes
 }), {
   ...noteActions
 })
 export default class Notes extends React.Component {
 
   render() {
-    const {notes, updateNote, deleteNote} = this.props
+    const {allNotes, lane, updateNote, deleteNote} = this.props
+
+    const laneNotes = lane.notes
+        .map(id => allNotes[ allNotes.findIndex((note) => note.id === id) ])
+        .filter(note => note)
 
     return (
       <ul className={'notes'} >
-        {notes.map(note => (
+        {laneNotes.map(note => (
           <li className={'note'} key={note.id} >
             <Note
               task={note.task}
