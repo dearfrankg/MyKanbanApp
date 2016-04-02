@@ -20,7 +20,10 @@ export default class Notes extends React.Component {
 
     return (
       <ul className={'notes'} >{laneNotes.map(note => (
-          <Note className={'note'} id={note.id} key={note.id} >
+          <Note className="note" id={note.id} key={note.id}
+            onMove={({sourceId, targetId}) =>
+              console.log(`source: ${sourceId}, target: ${targetId}`)
+          }>
             <Editable
                 editing={note.editing}
                 value={note.task}
