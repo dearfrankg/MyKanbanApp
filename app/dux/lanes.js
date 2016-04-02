@@ -9,6 +9,8 @@ import uuid from 'node-uuid';
 // CONSTANTS
 //
 export const CREATE_LANE = 'CREATE_LANE'
+export const UPDATE_LANE = 'UPDATE_LANE'
+export const DELETE_LANE = 'DELETE_LANE'
 export const ATTACH_TO_LANE = 'ATTACH_TO_LANE'
 export const DETACH_FROM_LANE = 'DETACH_FROM_LANE'
 
@@ -27,6 +29,8 @@ export const createLane = () => action(CREATE_LANE, {
     name: 'New Lane'
   }
 })
+export const updateLane = (updatedLane) => action(UPDATE_LANE, {...updatedLane})
+export const deleteLane = id => action(DELETE_LANE, {id})
 export const attachToLane = (laneId, noteId) => action(ATTACH_TO_LANE, {laneId, noteId})
 export const detachFromLane = (laneId, noteId) => action(DETACH_FROM_LANE, {laneId, noteId})
 
@@ -38,6 +42,18 @@ export default (state = [], action) => {
   switch(action.type) {
     case CREATE_LANE:
       return [...state, action.lane];
+
+    case UPDATE_LANE:
+      return state.map((lane) => {
+        if(lane.id === action.id) {
+          return {...lane, ...action}
+        }
+
+        return lane;
+      });
+
+    case DELETE_LANE:
+      return state.filter((lane) => lane.id !== action.id);
 
     case ATTACH_TO_LANE:
       return state.map(lane => {

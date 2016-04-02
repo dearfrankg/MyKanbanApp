@@ -20,6 +20,9 @@ const initialState = storage.get(APP_STORAGE) || {}
 const store = createStoreWithMiddleware(rootReducer, initialState)
 store.subscribe(() => storage.set(APP_STORAGE, store.getState()))
 
+
+
+
 ReactDOM.render(
   <Provider store={store}>
     <div>

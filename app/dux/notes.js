@@ -21,7 +21,7 @@ function action(type, payload = {}) {
 }
 
 export const createNote = () => action(CREATE_NOTE, {note: {id: uuid.v4(), task: 'New Note'}})
-export const updateNote = (id, task) => action(UPDATE_NOTE, {id, task})
+export const updateNote = (updatedNote) => action(UPDATE_NOTE, {...updatedNote})
 export const deleteNote = id => action(DELETE_NOTE, {id})
 
 
@@ -36,7 +36,7 @@ export default (state = [], action) => {
     case UPDATE_NOTE:
       return state.map(note => {
         if (note.id === action.id) {
-          return {...note, task: action.task}
+          return {...note, ...action}
         }
         return note
       })
