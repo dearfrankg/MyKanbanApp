@@ -1,4 +1,5 @@
 import React from 'react';
+import Note from './Note'
 import Editable from './Editable'
 import { connect } from 'react-redux'
 import * as noteActions from '../dux/notes'
@@ -18,18 +19,16 @@ export default class Notes extends React.Component {
         .filter(note => note)
 
     return (
-      <ul className={'notes'} >
-        {laneNotes.map(note => (
-          <li className={'note'} key={note.id} >
+      <ul className={'notes'} >{laneNotes.map(note => (
+          <Note className={'note'} id={note.id} key={note.id} >
             <Editable
                 editing={note.editing}
                 value={note.task}
                 onValueClick={onValueClick.bind(null, note.id)}
                 onUpdate={onUpdate.bind(null, note.id)}
                 onDelete={onDelete.bind(null, note.id)} />
-          </li>
-        ))}
-      </ul>
+          </Note>
+      ))}</ul>
     )
   }
 
