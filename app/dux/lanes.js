@@ -13,6 +13,7 @@ export const UPDATE_LANE = 'UPDATE_LANE'
 export const DELETE_LANE = 'DELETE_LANE'
 export const ATTACH_TO_LANE = 'ATTACH_TO_LANE'
 export const DETACH_FROM_LANE = 'DETACH_FROM_LANE'
+export const MOVE = 'MOVE'
 
 
 //////////////////////////////////
@@ -33,6 +34,7 @@ export const updateLane = (updatedLane) => action(UPDATE_LANE, {...updatedLane})
 export const deleteLane = id => action(DELETE_LANE, {id})
 export const attachToLane = (laneId, noteId) => action(ATTACH_TO_LANE, {laneId, noteId})
 export const detachFromLane = (laneId, noteId) => action(DETACH_FROM_LANE, {laneId, noteId})
+export const move = ({sourceId, targetId}) => action(MOVE, {sourceId, targetId})
 
 
 ////////////////////////////////
@@ -77,6 +79,11 @@ export default (state = [], action) => {
 
         return lane;
       })
+
+    case MOVE:
+      const {sourceId, targetId} = action
+      console.log(`source: ${sourceId}, target: ${targetId}`)
+      return state
 
     default:
       return state

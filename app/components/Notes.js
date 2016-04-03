@@ -3,16 +3,18 @@ import Note from './Note'
 import Editable from './Editable'
 import { connect } from 'react-redux'
 import * as noteActions from '../dux/notes'
+import * as laneActions from '../dux/lanes'
 
 @connect((state) => ({
   allNotes: state.notes
 }), {
-  ...noteActions
+  ...noteActions,
+  ...laneActions
 })
 export default class Notes extends React.Component {
 
   render() {
-    const {allNotes, lane, onValueClick, onUpdate, onDelete} = this.props
+    const {allNotes, lane, onValueClick, onUpdate, onDelete, move} = this.props
 
     const laneNotes = lane.notes
         .map(id => allNotes[ allNotes.findIndex((note) => note.id === id) ])
@@ -20,10 +22,7 @@ export default class Notes extends React.Component {
 
     return (
       <ul className={'notes'} >{laneNotes.map(note => (
-          <Note className="note" id={note.id} key={note.id}
-            onMove={({sourceId, targetId}) =>
-              console.log(`source: ${sourceId}, target: ${targetId}`)
-          }>
+          <Note className="note" id={note.id} key={note.id} onMove={move}>
             <Editable
                 editing={note.editing}
                 value={note.task}
