@@ -1,4 +1,5 @@
-import uuid from 'node-uuid';
+import uuid from 'node-uuid'
+import update from 'react-addons-update'
 
 //////////////////////////////////
 // DUX
@@ -43,7 +44,7 @@ export const move = ({sourceId, targetId}) => action(MOVE, {sourceId, targetId})
 export default (state = [], action) => {
   switch(action.type) {
     case CREATE_LANE:
-      return [...state, action.lane];
+      return [...state, action.lane]
 
     case UPDATE_LANE:
       return state.map((lane) => {
@@ -51,25 +52,25 @@ export default (state = [], action) => {
           return {...lane, ...action}
         }
 
-        return lane;
-      });
+        return lane
+      })
 
     case DELETE_LANE:
-      return state.filter((lane) => lane.id !== action.id);
+      return state.filter((lane) => lane.id !== action.id)
 
     case ATTACH_TO_LANE:
       return state.map(lane => {
         if(lane.id === action.laneId) {
           if(lane.notes.includes(action.noteId)) {
-            console.warn('Already attached note to lane', lanes);
+            console.warn('Already attached note to lane', lanes)
           }
           else {
             return {...lane, notes: [...lane.notes, action.noteId]}
           }
         }
 
-        return lane;
-      });
+        return lane
+      })
 
     case DETACH_FROM_LANE:
       return state.map(lane => {
@@ -77,12 +78,59 @@ export default (state = [], action) => {
           lane.notes = lane.notes.filter(note => note !== action.noteId)
         }
 
-        return lane;
+        return lane
       })
 
     case MOVE:
       const {sourceId, targetId} = action
-      console.log(`source: ${sourceId}, target: ${targetId}`)
+      const lanes = state
+      const sourceLane = lanes.filter((lane) => lane.notes.includes(sourceId))[0]
+      const targetLane = lanes.filter((lane) => lane.notes.includes(targetId))[0]
+      const sourceNoteIndex = sourceLane.notes.indexOf(sourceId)
+      const targetNoteIndex = targetLane.notes.indexOf(targetId)
+
+      if(sourceLane === targetLane) {
+        return state.map((lane) => {
+          return lane.id === sourceLane.id
+            ? {...lane,
+                notes: update(sourceLane.notes, {
+                  $splice: [
+                    [sourceNoteIndex, 1],
+                    [targetNoteIndex, 0, sourceId]
+                  ]
+                })
+              }
+            : lane
+        })
+      }
+      else {
+        return state.map((lane) => {
+
+          if (lane === sourceLane) {
+            // get rid of the source note
+            return {...lane,
+              notes: lane.notes.length > 1
+                ? lane.notes
+                    .slice(0, sourceNoteIndex)
+                    .concat(lane.notes.slice(sourceNoteIndex + 1))
+                : []
+            }
+          }
+
+          if (lane === targetLane) {
+            // and move it to target
+            return {...lane,
+              notes: lane.notes
+                .slice(0, sourceNoteIndex)
+                .concat([sourceId])
+                .concat(lane.notes.slice(sourceNoteIndex))
+            }
+          }
+
+          return lane
+
+        })
+      }
       return state
 
     default:
