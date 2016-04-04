@@ -60,6 +60,11 @@ export default (state = [], action) => {
 
     case ATTACH_TO_LANE:
       return state.map(lane => {
+
+        if(lane.notes.includes(action.noteId)) {
+          return {...lane, notes: [...lane.notes.filter(note => note !== action.noteId)]}
+        }
+
         if(lane.id === action.laneId) {
           if(lane.notes.includes(action.noteId)) {
             console.warn('Already attached note to lane', lanes)

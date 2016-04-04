@@ -1,20 +1,40 @@
-import React from 'react';
+import React from 'react'
 import Editable from './Editable'
 import Notes from './Notes'
 import { connect } from 'react-redux'
 import * as laneActions from '../dux/lanes'
 import * as noteActions from '../dux/notes'
+import {DropTarget} from 'react-dnd'
+import ItemTypes from '../constants/itemTypes'
+
+const noteTarget = {
+  hover(targetProps, monitor) {
+    const sourceProps = monitor.getItem()
+    const sourceId = sourceProps.id
+
+    if(!targetProps.lane.notes.length) {
+      targetProps.attachToLane(targetProps.lane.id, sourceId)
+    }
+  }
+}
 
 @connect((state) => ({}), {
   ...laneActions,
   ...noteActions
 })
+@DropTarget(ItemTypes.NOTE, noteTarget, (connect) => ({
+  connectDropTarget: connect.dropTarget()
+}))
 export default class Lane extends React.Component {
 
   render() {
-    const {lane, createNote, updateNote, updateLane, deleteLane, ...props} = this.props
+    const {
+      connectDropTarget, lane,
+      createNote, updateNote,
+      updateLane, deleteLane, ...props
+    } = this.props
 
-    return (
+    return connectDropTarget(
       <div {...props}>
         <div
           className="lane-header"
@@ -50,8 +70,8 @@ export default class Lane extends React.Component {
   }
 
   deleteNote(laneId, noteId) {
-    this.props.detachFromLane(laneId, noteId);
-    this.props.deleteNote(noteId);
+    this.props.detachFromLane(laneId, noteId)
+    this.props.deleteNote(noteId)
   }
 
 }
